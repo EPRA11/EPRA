@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPRA - تخصيص صفحتك</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --accent: #7c5cbf;
+  --bg: #080810;
+  --glass: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.1);
+  --text: #e8e8f0;
+  --muted: rgba(255,255,255,0.4);
+}
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: 'Tajawal', sans-serif;
+  color: var(--text);
+  padding: 24px 20px 60px;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 20% 20%, rgba(124,92,191,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.container { max-width: 500px; margin: 0 auto; position: relative; }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.header h1 { font-family:'Rajdhani',sans-serif; font-size:22px; font-weight:700; background:linear-gradient(135deg,#b09fe0,#4e9af1); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.header-btns { display:flex; gap:8px; }
+.btn-sm {
+  padding: 7px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-sm:hover { border-color: rgba(124,92,191,0.5); background: rgba(124,92,191,0.1); }
+.btn-sm.primary { background: linear-gradient(135deg,#7c5cbf,#4e9af1); border-color: transparent; }
+
+.section {
+  background: rgba(12,12,22,0.8);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 14px;
+  backdrop-filter: blur(20px);
+}
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content: '';
+  width: 3px; height: 14px;
+  background: linear-gradient(#7c5cbf, #4e9af1);
+  border-radius: 2px;
+}
+
+/* Avatar */
+.avatar-section { display:flex; align-items:center; gap:16px; }
+.avatar-preview {
+  width: 72px; height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(124,92,191,0.4);
+  background: rgba(255,255,255,0.05);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  flex-shrink: 0;
+}
+.avatar-preview:hover { border-color: rgba(124,92,191,0.8); }
+.avatar-upload { display:flex; flex-direction:column; gap:6px; flex:1; }
+.avatar-upload p { font-size:12px; color:var(--muted); }
+
+label { font-size:12px; color:var(--muted); margin-bottom:4px; display:block; letter-spacing:0.5px; }
+input, textarea {
+  width:100%;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  text-align: right;
+}
+input:focus, textarea:focus { border-color: rgba(124,92,191,0.5); }
+input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+textarea { resize: vertical; min-height: 70px; }
+.input-group { margin-bottom: 12px; }
+.input-prefix {
+  display: flex;
+  align-items: center;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.input-prefix:focus-within { border-color: rgba(124,92,191,0.5); }
+.prefix {
+  padding: 11px 12px;
+  font-size: 13px;
+  color: var(--muted);
+  background: rgba(255,255,255,0.03);
+  border-left: 1px solid var(--border);
+  white-space: nowrap;
+}
+.input-prefix input { border: none; border-radius: 0; background: transparent; }
+
+/* Links */
+.links-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+.link-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+.link-item input { background: transparent; border: none; padding: 0; font-size: 13px; }
+.link-item input:focus { border: none; }
+.link-del {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,80,80,0.2);
+  background: rgba(255,80,80,0.08);
+  color: #ff8080;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.link-del:hover { background: rgba(255,80,80,0.2); }
+.add-link {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px dashed rgba(255,255,255,0.15);
+  background: transparent;
+  color: var(--muted);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.add-link:hover { border-color: rgba(124,92,191,0.4); color: #b09fe0; }
+
+.save-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #7c5cbf, #4e9af1);
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+.save-btn:hover { opacity:0.9; transform:translateY(-1px); }
+.save-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+
+.msg {
+  font-size: 13px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  text-align: center;
+  display: none;
+  margin-top: 10px;
+}
+.msg.error { background:rgba(255,80,80,0.1); border:1px solid rgba(255,80,80,0.3); color:#ff8080; display:block; }
+.msg.success { background:rgba(30,215,96,0.1); border:1px solid rgba(30,215,96,0.3); color:#1ed760; display:block; }
+
+.link-copy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(124,92,191,0.08);
+  border: 1px solid rgba(124,92,191,0.25);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.link-copy span { flex:1; font-size:13px; color:#b09fe0; direction:ltr; text-align:left; }
+.copy-btn {
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(124,92,191,0.4);
+  background: rgba(124,92,191,0.15);
+  color: #b09fe0;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: 'Tajawal', sans-serif;
+  transition: all 0.2s;
+}
+.copy-btn:hover { background: rgba(124,92,191,0.3); }
+
+#fileInput { display:none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>✦ EPRA - تخصيص صفحتك</h1>
+    <div class="header-btns">
+      <a href="#" id="viewLink" class="btn-sm" target="_blank">👁 عرض</a>
+      <button class="btn-sm" onclick="logout()">خروج</button>
+    </div>
+  </div>
+
+  <!-- رابطك -->
+  <div class="link-copy">
+    <span id="profileUrl">جاري التحميل...</span>
+    <button class="copy-btn" onclick="copyLink()">نسخ</button>
+  </div>
+
+  <!-- الصورة الشخصية -->
+  <div class="section">
+    <div class="section-title">الصورة الشخصية</div>
+    <div class="avatar-section">
+      <img id="avatarPreview" class="avatar-preview" src="https://via.placeholder.com/72" onclick="document.getElementById('fileInput').click()">
+      <div class="avatar-upload">
+        <p>اضغط على الصورة لتغييرها</p>
+        <p style="font-size:11px; color:rgba(255,255,255,0.25);">PNG, JPG, WebP — أقل من 2MB</p>
+      </div>
+      <input type="file" id="fileInput" accept="image/*" onchange="uploadAvatar(event)">
+    </div>
+  </div>
+
+  <!-- المعلومات الأساسية -->
+  <div class="section">
+    <div class="section-title">المعلومات الأساسية</div>
+    <div class="input-group">
+      <label>الاسم المعروض</label>
+      <input type="text" id="displayName" placeholder="اسمك أو لقبك">
+    </div>
+    <div class="input-group">
+      <label>البايو / نبذة عنك</label>
+      <textarea id="bio" placeholder="اكتب شيئاً عن نفسك..."></textarea>
+    </div>
+    <div class="input-group">
+      <label>اليوزرنيم (الرابط)</label>
+      <div class="input-prefix">
+        <span class="prefix">epra.app/</span>
+        <input type="text" id="username" placeholder="username" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+      </div>
+    </div>
+  </div>
+
+  <!-- الموسيقى -->
+  <div class="section">
+    <div class="section-title">🎵 موسيقى الخلفية</div>
+    <div class="input-group">
+      <label>رابط YouTube</label>
+      <input type="text" id="youtubeUrl" placeholder="https://www.youtube.com/watch?v=...">
+    </div>
+  </div>
+
+  <!-- الروابط -->
+  <div class="section">
+    <div class="section-title">الروابط</div>
+    <div class="links-list" id="linksList"></div>
+    <button class="add-link" onclick="addLink()">+ إضافة رابط</button>
+  </div>
+
+  <div class="msg" id="saveMsg"></div>
+  <button class="save-btn" onclick="saveProfile()">💾 حفظ التغييرات</button>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://kgwdjtncgbzphqjweqzt.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtnd2RqdG5jZ2J6cGhxandlcXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDEyMTQsImV4cCI6MjA4OTU3NzIxNH0.e04LgfZ2z6vCy1xvhXtN9vlrYhmhvXKqVdbGm6eUn7I';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentProfile = null;
+
+async function init() {
+  const { data: { session } } = await db.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return; }
+  currentUser = session.user;
+
+  const { data } = await db.from('profiles').select('*').eq('id', currentUser.id).single();
+  if (data) {
+    currentProfile = data;
+    loadProfile(data);
+  }
+}
+
+function loadProfile(p) {
+  document.getElementById('displayName').value = p.display_name || '';
+  document.getElementById('bio').value = p.bio || '';
+  document.getElementById('username').value = p.username || '';
+  document.getElementById('youtubeUrl').value = p.youtube_id ? `https://youtube.com/watch?v=${p.youtube_id}` : '';
+  if (p.avatar_url) document.getElementById('avatarPreview').src = p.avatar_url;
+
+  const url = `${location.origin}/profile.html?u=${p.username}`;
+  document.getElementById('profileUrl').textContent = url;
+  document.getElementById('viewLink').href = url;
+
+  // Load links
+  const links = p.links || [];
+  links.forEach(l => addLink(l.label, l.url));
+}
+
+function addLink(label='', url='') {
+  const list = document.getElementById('linksList');
+  const div = document.createElement('div');
+  div.className = 'link-item';
+  div.innerHTML = `
+    <input type="text" placeholder="الاسم" value="${label}" style="width:35%">
+    <input type="text" placeholder="الرابط https://..." value="${url}" style="flex:1; direction:ltr; text-align:left;">
+    <button class="link-del" onclick="this.parentElement.remove()">✕</button>
+  `;
+  list.appendChild(div);
+}
+
+function getLinks() {
+  const items = document.querySelectorAll('.link-item');
+  return Array.from(items).map(item => {
+    const inputs = item.querySelectorAll('input');
+    return { label: inputs[0].value.trim(), url: inputs[1].value.trim() };
+  }).filter(l => l.label && l.url);
+}
+
+function extractYoutubeId(url) {
+  const match = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
+  return match ? match[1] : '';
+}
+
+async function uploadAvatar(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { alert('الصورة أكبر من 2MB'); return; }
+
+  const ext = file.name.split('.').pop();
+  const path = `${currentUser.id}/avatar.${ext}`;
+
+  const { error } = await db.storage.from('avatars').upload(path, file, { upsert: true });
+  if (error) { alert('فشل رفع الصورة'); return; }
+
+  const { data } = db.storage.from('avatars').getPublicUrl(path);
+  document.getElementById('avatarPreview').src = data.publicUrl;
+  currentProfile.avatar_url = data.publicUrl;
+}
+
+async function saveProfile() {
+  const btn = document.querySelector('.save-btn');
+  btn.disabled = true; btn.textContent = 'جاري الحفظ...';
+
+  const username = document.getElementById('username').value.trim();
+  const youtubeUrl = document.getElementById('youtubeUrl').value.trim();
+
+  // Check username uniqueness
+  if (username !== currentProfile.username) {
+    const { data: ex } = await db.from('profiles').select('username').eq('username', username).single();
+    if (ex) {
+      showMsg('saveMsg', 'هذا اليوزرنيم محجوز', 'error');
+      btn.disabled=false; btn.textContent='💾 حفظ التغييرات';
+      return;
+    }
+  }
+
+  const updates = {
+    display_name: document.getElementById('displayName').value.trim(),
+    bio: document.getElementById('bio').value.trim(),
+    username,
+    youtube_id: extractYoutubeId(youtubeUrl),
+    links: getLinks(),
+    avatar_url: currentProfile.avatar_url || '',
+    updated_at: new Date().toISOString()
+  };
+
+  const { error } = await db.from('profiles').update(updates).eq('id', currentUser.id);
+  if (error) {
+    showMsg('saveMsg', 'حدث خطأ، حاول مرة ثانية', 'error');
+  } else {
+    currentProfile = { ...currentProfile, ...updates };
+    const url = `${location.origin}/profile.html?u=${username}`;
+    document.getElementById('profileUrl').textContent = url;
+    document.getElementById('viewLink').href = url;
+    showMsg('saveMsg', '✅ تم الحفظ بنجاح!', 'success');
+  }
+
+  btn.disabled=false; btn.textContent='💾 حفظ التغييرات';
+}
+
+function showMsg(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.className = 'msg ' + type;
+  setTimeout(() => { el.className = 'msg'; }, 3000);
+}
+
+function copyLink() {
+  const url = document.getElementById('profileUrl').textContent;
+  navigator.clipboard.writeText(url);
+  document.querySelector('.copy-btn').textContent = '✓ تم';
+  setTimeout(() => document.querySelector('.copy-btn').textContent = 'نسخ', 2000);
+}
+
+function logout() {
+  db.auth.signOut().then(() => window.location.href = 'index.html');
+}
+
+init();
+</script>
+</body>
+</html>
